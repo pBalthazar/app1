@@ -1,0 +1,17 @@
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\ConsoleApp3.exe.config
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\ConsoleApp3.exe
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\ConsoleApp3.pdb
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\ClassLibrary1.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.Extensions.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.Primitives.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.WebRequest.dll
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\ClassLibrary1.pdb
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.xml
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\bin\Debug\System.Net.Http.WebRequest.xml
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\obj\Debug\SondageClient.csprojResolveAssemblyReference.cache
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\obj\Debug\SondageClient.csproj.CoreCompileInputs.cache
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\obj\Debug\ConsoleApp3.exe
+C:\Users\Phil\source\repos\WebApplication3\ConsoleApp3\obj\Debug\ConsoleApp3.pdb
