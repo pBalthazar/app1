@@ -19,6 +19,7 @@ namespace WebApplication3.Services
         {
             throw new NotImplementedException();
         }
+
         public IList<Poll> GetAvailablePolls(int userId)
         {
             return sondageRepository.GetSondages();

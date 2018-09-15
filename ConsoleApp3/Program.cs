@@ -13,10 +13,28 @@ namespace ConsoleApp3
     {
         static HttpClient client = new HttpClient();
 
+        static async Task<bool> TryConnection()
+        {
+            bool result = false;
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync("");
+                if (response.IsSuccessStatusCode)
+                {
+                    result = true;
+                }
+                return result;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
         static async Task<IList<Poll>> GetSondages()
         {
             IList<Poll> result = null;
- 
+
             HttpResponseMessage response = await client.GetAsync("api/Sondage");
             if (response.IsSuccessStatusCode)
             {
@@ -70,6 +88,43 @@ namespace ConsoleApp3
             RunAsync().GetAwaiter().GetResult();
         }
 
+        static private void LogInWithUserId()
+        {
+            //On demande le nom d'utilisateur
+            Console.WriteLine("Enter your userId:");
+            string _userId = Console.ReadLine();
+            int userId;
+
+            while (!Int32.TryParse(_userId, out userId))
+            {
+                Console.WriteLine("Enter a valid number...! Try again");
+                userId = -1;
+                _userId = Console.ReadLine();
+            }
+        }
+
+        static async void ValidateSondages(IList<Poll> sondages)
+        {
+            string tryAgain;
+            while (sondages == null || sondages.Count == 0)
+            {
+                Console.WriteLine("No poll available! Try again (Y/N)?");
+                tryAgain = Console.ReadLine();
+                while (tryAgain != "Y" || tryAgain != "N")
+                {
+                    tryAgain = Console.ReadLine();
+                }
+                if (tryAgain == "Y")
+                {
+                    sondages = await GetSondages();
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
+
         static async Task RunAsync()
         {
             // Update port # in the following line.
@@ -77,43 +132,49 @@ namespace ConsoleApp3
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-
-            try
+            bool serverUp = await TryConnection();
+            if (serverUp)
             {
-                // Get the poll
-                IList<Poll> sondages = null;
-                sondages = await GetSondages();
-                ShowSondages(sondages);
-                
-                string selectedSondage = Console.ReadLine();
-                int pollId = -1;
-
-                while (!Int32.TryParse(selectedSondage, out pollId)  || sondages.FirstOrDefault(x => x.Id == pollId) == null)
+                try
                 {
-                    Console.WriteLine("Choose a valid number...! Try again");
-                    pollId = -1;
-                    selectedSondage = Console.ReadLine();                    
+                    LogInWithUserId();
+
+                    IList<Poll> sondages = await GetSondages();
+                    ValidateSondages(sondages);
+                    ShowSondages(sondages);
+
+                    string selectedSondage = Console.ReadLine();
+                    int pollId = -1;
+
+                    while (!Int32.TryParse(selectedSondage, out pollId) || sondages.FirstOrDefault(x => x.Id == pollId) == null)
+                    {
+                        Console.WriteLine("Choose a valid number...! Try again");
+                        pollId = -1;
+                        selectedSondage = Console.ReadLine();
+                    }
+
+                    PollQuestion question = await GetPollQuestion(1, pollId, -1);
+                    string questionAnswer = string.Empty;
+
+                    while (question != null)
+                    {
+                        ShowPollQuestion(question);
+                        questionAnswer = Console.ReadLine();
+                        question.Text = questionAnswer;
+
+                        await AnswerQuestion(1, question);
+                        question = await GetPollQuestion(1, pollId, question.QuestionId);
+                    }
                 }
-                Console.WriteLine(selectedSondage);
-
-                PollQuestion question = await GetPollQuestion(1, pollId, -1);
-                string questionAnswer = string.Empty;
-
-                while (question != null)
+                catch (Exception e)
                 {
-                    ShowPollQuestion(question);
-                    questionAnswer = Console.ReadLine();
-                    question.Text = questionAnswer;
-
-                    await AnswerQuestion(1, question);
-                    question = await GetPollQuestion(1, pollId, question.QuestionId);
+                    Console.WriteLine(e.Message);
                 }
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Server not responding...");
             }
-
             Console.ReadLine();
         }
     }
