@@ -87,19 +87,26 @@ namespace ConsoleApp3
             RunAsync().GetAwaiter().GetResult();
         }
 
-        static private void LogInWithUserId()
+        static private bool LogInWithUsername()
         {
             //On demande le nom d'utilisateur
-            Console.WriteLine("Enter your userId:");
-            string _userId = Console.ReadLine();
-            int userId;
+            //Console.WriteLine("Enter your userId:");
+            //string _userId = Console.ReadLine();
+            //int userId;
+            //
+            //while (!Int32.TryParse(_userId, out userId))
+            //{
+            //    Console.WriteLine("Enter a valid number...! Try again");
+            //    userId = -1;
+            //    _userId = Console.ReadLine();
+            //}
+            
+            Console.WriteLine("Enter your username:");
+            string _username = Console.ReadLine();
+            Console.WriteLine("Enter your password:");
+            string _password = Console.ReadLine();
 
-            while (!Int32.TryParse(_userId, out userId))
-            {
-                Console.WriteLine("Enter a valid number...! Try again");
-                userId = -1;
-                _userId = Console.ReadLine();
-            }
+            return _username == "123" && _password == "456";
         }
 
         static async void ValidateSondages(IList<Poll> sondages)
@@ -136,7 +143,10 @@ namespace ConsoleApp3
             {
                 try
                 {
-                    LogInWithUserId();
+                    while (!LogInWithUsername())
+                    {
+                        Console.WriteLine("Invalid username or password, try again.");
+                    };
 
                     IList<Poll> sondages = await GetSondages();
                     ValidateSondages(sondages);
