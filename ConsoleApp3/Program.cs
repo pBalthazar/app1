@@ -18,7 +18,7 @@ namespace ConsoleApp3
             bool result = false;
             try
             {
-                HttpResponseMessage response = await client.GetAsync("");
+                HttpResponseMessage response = await client.GetAsync("api/values");
                 if (response.IsSuccessStatusCode)
                 {
                     result = true;
@@ -128,7 +128,7 @@ namespace ConsoleApp3
         static async Task RunAsync()
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://localhost:64636/");
+            client.BaseAddress = new Uri("https://localhost:44328/");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
