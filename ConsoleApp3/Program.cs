@@ -46,7 +46,7 @@ namespace ConsoleApp3
         {
             PollQuestion result = null;
 
-            HttpResponseMessage response = await client.GetAsync($"api/Sondage?userId={userId}&pollId={pollId}&currentQuestionId={currentQuestionId}");
+            HttpResponseMessage response = await client.GetAsync($"api/Sondage/question?userId={userId}&pollId={pollId}&currentQuestionId={currentQuestionId}");
             if (response.IsSuccessStatusCode)
             {
                 result = await response.Content.ReadAsAsync<PollQuestion>();

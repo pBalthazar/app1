@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SondageServer.Services;
 using USherbrooke.ServiceModel.Sondage;
 
@@ -10,58 +11,30 @@ using USherbrooke.ServiceModel.Sondage;
 [ApiController]
 public class SondageController : Controller
 {
-    // GET api/values
+    readonly ILogger<SondageController> _log;
+
+    public SondageController(ILogger<SondageController> log)
+    {
+        _log = log;
+    }
+
     [HttpGet]
-    public ActionResult<IEnumerable<string>> Get()
-    {
-        return new string[] { "value1", "value2" };
-    }
-
-    // GET api/values/5
-    [HttpGet("{id}")]
-    public ActionResult<string> Get(int id)
-    {
-        return "value";
-    }
-
-    // POST api/values
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-    }
-
-    // PUT api/values/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
-    // DELETE api/values/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
-    }
-
-
-    /*
     public IList<Poll> Get()
     {
+        _log.LogInformation("Hello, world!");
         return ServicesContainer.SondageService.GetAvailablePolls(1);
-        //return sondageRepository.GetSondages();
     }
-
-    public PollQuestion Get(int userId, int pollId, int currentQuestionId)
+    [HttpGet("question")]
+    //public IActionResult Get([FromQuery(Name = "page")] string page)
+    public PollQuestion Get([FromQuery(Name = "userId")] int userId, [FromQuery(Name = "pollId")] int pollId, [FromQuery(Name = "currentQuestionId")] int currentQuestionId)
     {
         return ServicesContainer.SondageService.GetNextQuestion(userId, pollId, currentQuestionId);
-        //return sondageRepository.GetNextQuestion(pollId);
     }
 
     public bool Post(int userId, [FromBody] PollQuestion question)
     {
         return ServicesContainer.SondageService.SaveAnswer(userId, question);
-        //return sondageRepository.SaveQuestionAnswer(userId, question);
     }
-    */
 }
 
 
