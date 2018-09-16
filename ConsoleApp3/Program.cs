@@ -88,19 +88,45 @@ namespace ConsoleApp3
             RunAsync().GetAwaiter().GetResult();
         }
 
-        static private void LogInWithUserId()
+        static async Task<int> GetUserId(string username, string encryptedPassword)
         {
-            //On demande le nom d'utilisateur
-            Console.WriteLine("Enter your userId:");
-            string _userId = Console.ReadLine();
-            int userId;
+            int result = -1;
 
-            while (!Int32.TryParse(_userId, out userId))
+            HttpResponseMessage response = await client.GetAsync($"api/Sondage?username={username}&password={encryptedPassword}");
+            if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine("Enter a valid number...! Try again");
-                userId = -1;
-                _userId = Console.ReadLine();
+                result = await response.Content.ReadAsAsync<int>();
             }
+            return result;
+        }
+
+        static async Task<int> LogInWithUsername()
+        {
+            int userId;
+            //On demande le nom d'utilisateur
+            Console.WriteLine("Enter your username:");
+            string username = Console.ReadLine();
+
+            Console.WriteLine("Enter your password:");
+            string password = Console.ReadLine();
+
+            string cypherText;
+
+            using (var secureString = password.ToSecureString())
+            {
+                cypherText = secureString.EncryptString();
+            }
+
+            userId = await GetUserId(username, password);
+            return userId;
+
+
+            //while (!Int32.TryParse(_username, out username))
+            //{
+            //    Console.WriteLine("Enter a valid number...! Try again");
+            //    userId = -1;
+            //    _username = Console.ReadLine();
+            //}
         }
 
         static async void ValidateSondages(IList<Poll> sondages)
@@ -137,7 +163,7 @@ namespace ConsoleApp3
             {
                 try
                 {
-                    LogInWithUserId();
+                    int userId = await LogInWithUsername();
 
                     IList<Poll> sondages = await GetSondages();
                     ValidateSondages(sondages);
