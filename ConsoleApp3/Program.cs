@@ -66,24 +66,6 @@ namespace ConsoleApp3
             return succes;
         }
 
-        static void ShowSondages(IList<Poll> sondages)
-        {
-            Console.WriteLine("Listing sondages...");
-            foreach (Poll sondage in sondages)
-            {
-                Console.WriteLine($"Id: {sondage.Id} \t Description: {sondage.Description}");
-            }
-        }
-
-        static void ShowPollQuestion(PollQuestion question)
-        {
-            if (question != null)
-            {
-                Console.WriteLine("The next question is: ");
-                Console.WriteLine($"{question.QuestionId}: {question.Text}");
-            }
-        }
-
         static void Main()
         {
             RunAsync().GetAwaiter().GetResult();
@@ -113,28 +95,6 @@ namespace ConsoleApp3
             return _username == "123" && _password == "456";
         }*/
 
-        static async void ValidateSondages(IList<Poll> sondages)
-        {
-            string tryAgain;
-            while (sondages == null || sondages.Count == 0)
-            {
-                Console.WriteLine("No poll available! Try again (Y/N)?");
-                tryAgain = Console.ReadLine();
-                while (tryAgain != "Y" || tryAgain != "N")
-                {
-                    tryAgain = Console.ReadLine();
-                }
-                if (tryAgain == "Y")
-                {
-                    sondages = await GetSondages();
-                }
-                else
-                {
-                    Environment.Exit(0);
-                }
-            }
-        }
-
         static async Task RunAsync()
         {
             // Update port # in the following line.
@@ -159,18 +119,25 @@ namespace ConsoleApp3
                     {
                         //Get the availables polls
                         IList<Poll> sondages = await GetSondages();
-                        ValidateSondages(sondages);
-                        ShowSondages(sondages);
+
+                        if (!SondageHelper.ValidateSondages(sondages))
+                        {
+                            quitPoll = true;
+                        }
+                        
+                        ConsoleDisplayHelper.ShowSondages(sondages);
 
                         //Select the desire poll
-                        string selectedSondage = Console.ReadLine();
+                        string selectedPoll = Console.ReadLine();
                         int pollId = -1;
-                        while (!Int32.TryParse(selectedSondage, out pollId) || sondages.FirstOrDefault(x => x.Id == pollId) == null)
+
+                        while (SondageHelper.ValidatePollId(sondages, selectedPoll))
                         {
                             Console.WriteLine("Choose a valid number...! Try again");
-                            pollId = -1;
-                            selectedSondage = Console.ReadLine();
+                            selectedPoll = Console.ReadLine();
                         }
+
+                        Int32.TryParse(selectedPoll, out pollId);                        
 
                         //Get the first question
                         PollQuestion question = await GetPollQuestion(1, pollId, -1);
@@ -178,8 +145,15 @@ namespace ConsoleApp3
 
                         while (question != null)
                         {
-                            ShowPollQuestion(question);
+                            ConsoleDisplayHelper.ShowPollQuestion(question);
+
                             questionAnswer = Console.ReadLine();
+                            while (!SondageHelper.ValidateQuestionAnser(questionAnswer))
+                            {
+                                Console.WriteLine("Invalid answer...! Try again");
+                                questionAnswer = Console.ReadLine();
+                            }                         
+                            
                             question.Text = questionAnswer;
 
                             //Save the answer
