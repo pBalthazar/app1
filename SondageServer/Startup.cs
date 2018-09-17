@@ -31,7 +31,7 @@ namespace SondageServer
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme= "Custom Scheme";
-            }).AddCustomAuthentication("Custom Scheme", "MY Custom Scheme", o => { });
+            }).AddCustomAuthentication("Custom Scheme", "My Custom Scheme", o => { });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

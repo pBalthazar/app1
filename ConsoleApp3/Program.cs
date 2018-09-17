@@ -142,6 +142,7 @@ namespace ConsoleApp3
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(API_KEY);
             bool serverUp = await TryConnection();
             if (serverUp)
             {

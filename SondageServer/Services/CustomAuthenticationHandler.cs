@@ -22,12 +22,17 @@ namespace SondageServer.Services
         {
             try
             {
-                
-                return AuthenticateResult.Success(
-                    new AuthenticationTicket(
-                        new ClaimsPrincipal(),
-                        new AuthenticationProperties(),
-                        Scheme.Name));
+                if (this.Request.Headers["Authorization"] == "A2D3-HTDG-MLU2-3AM5")
+                {
+                    return AuthenticateResult.Success(
+                        new AuthenticationTicket(
+                            new ClaimsPrincipal(
+                            new ClaimsIdentity("Custom Scheme")),
+                    Scheme.Name));
+                }
+                else {
+                    return AuthenticateResult.Fail("Unauthorized Access");
+                }
             }
             catch
             {
