@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using USherbrooke.ServiceModel.Sondage;
 
@@ -11,6 +12,7 @@ namespace ConsoleApp3
     class Program
     {
         static HttpClient client = new HttpClient();
+        const string API_KEY = "A2D3-HTDG-MLU2-3AM5";
 
         static async Task<bool> TryConnection()
         {
@@ -69,20 +71,29 @@ namespace ConsoleApp3
             RunAsync().GetAwaiter().GetResult();
         }
 
-        static private void LogInWithUserId()
+        /*static async Task<bool> LogInWithUsername()
         {
             //On demande le nom d'utilisateur
-            Console.WriteLine("Enter your userId:");
-            string _userId = Console.ReadLine();
-            int userId;
+            //Console.WriteLine("Enter your userId:");
+            //string _userId = Console.ReadLine();
+            //int userId;
+            //
+            //while (!Int32.TryParse(_userId, out userId))
+            //{
+            //    Console.WriteLine("Enter a valid number...! Try again");
+            //    userId = -1;
+            //    _userId = Console.ReadLine();
+            //}
+            
+            Console.WriteLine("Enter your username:");
+            string _username = Console.ReadLine();
+            Console.WriteLine("Enter your password:");
+            string _password = Console.ReadLine();
 
-            while (!Int32.TryParse(_userId, out userId))
-            {
-                Console.WriteLine("Enter a valid number...! Try again");
-                userId = -1;
-                _userId = Console.ReadLine();
-            }
-        }
+            HttpResponseMessage response = await client.PostAsync("/Login", new StringContent(_username + ':' + _password, Encoding.UTF8, "application/json"));
+
+            return _username == "123" && _password == "456";
+        }*/
 
         static async Task RunAsync()
         {
@@ -91,13 +102,16 @@ namespace ConsoleApp3
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(API_KEY);
             bool serverUp = await TryConnection();
             if (serverUp)
             {
                 try
                 {
-                    //Authentification
-                    LogInWithUserId();
+                    /*while (!LogInWithUsername().Result)
+                    {
+                        Console.WriteLine("Invalid username or password, try again.");
+                    };*/
 
                     bool quitPoll = false;
 
