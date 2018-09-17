@@ -57,7 +57,7 @@ namespace ConsoleApp3
         static async Task<bool> AnswerQuestion(int userId, PollQuestion question)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync(
-                $"api/Sondage?userId={userId}", question);
+                $"api/Sondage/question?userId={userId}", question);
             response.EnsureSuccessStatusCode();
 
             bool succes = await response.Content.ReadAsAsync<bool>();
@@ -136,34 +136,59 @@ namespace ConsoleApp3
             {
                 try
                 {
+                    //Authentification
                     LogInWithUserId();
 
-                    IList<Poll> sondages = await GetSondages();
-                    ValidateSondages(sondages);
-                    ShowSondages(sondages);
+                    bool quitPoll = false;
 
-                    string selectedSondage = Console.ReadLine();
-                    int pollId = -1;
-
-                    while (!Int32.TryParse(selectedSondage, out pollId) || sondages.FirstOrDefault(x => x.Id == pollId) == null)
+                    while (!quitPoll)
                     {
-                        Console.WriteLine("Choose a valid number...! Try again");
-                        pollId = -1;
-                        selectedSondage = Console.ReadLine();
+                        //Get the availables polls
+                        IList<Poll> sondages = await GetSondages();
+                        ValidateSondages(sondages);
+                        ShowSondages(sondages);
+
+                        //Select the desire poll
+                        string selectedSondage = Console.ReadLine();
+                        int pollId = -1;
+                        while (!Int32.TryParse(selectedSondage, out pollId) || sondages.FirstOrDefault(x => x.Id == pollId) == null)
+                        {
+                            Console.WriteLine("Choose a valid number...! Try again");
+                            pollId = -1;
+                            selectedSondage = Console.ReadLine();
+                        }
+
+                        //Get the first question
+                        PollQuestion question = await GetPollQuestion(1, pollId, -1);
+                        string questionAnswer = string.Empty;
+
+                        while (question != null)
+                        {
+                            ShowPollQuestion(question);
+                            questionAnswer = Console.ReadLine();
+                            question.Text = questionAnswer;
+
+                            //Save the answer
+                            await AnswerQuestion(1, question);
+
+                            //Get the next question
+                            question = await GetPollQuestion(1, pollId, question.QuestionId);
+                        }
+
+                        Console.WriteLine("Thank you. You have answered all the questions!");
+                        Console.WriteLine("Do you want to answer an another poll? (Y/N)");
+                        string quitOrNot = Console.ReadLine();
+                        while (quitOrNot.ToLowerInvariant() != "y" && quitOrNot.ToLowerInvariant() != "n")
+                        {
+                            Console.WriteLine("Enter 'Y' or 'N'");
+                            quitOrNot = Console.ReadLine();
+                        }
+                        if (quitOrNot.ToLowerInvariant() == "n")
+                        {
+                            quitPoll = true;
+                        }
                     }
-
-                    PollQuestion question = await GetPollQuestion(1, pollId, -1);
-                    string questionAnswer = string.Empty;
-
-                    while (question != null)
-                    {
-                        ShowPollQuestion(question);
-                        questionAnswer = Console.ReadLine();
-                        question.Text = questionAnswer;
-
-                        await AnswerQuestion(1, question);
-                        question = await GetPollQuestion(1, pollId, question.QuestionId);
-                    }
+                    Console.WriteLine("GoodBye!");
                 }
                 catch (Exception e)
                 {
