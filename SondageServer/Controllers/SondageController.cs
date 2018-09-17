@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SondageServer.Services;
 using USherbrooke.ServiceModel.Sondage;
 
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class SondageController : Controller
 {
