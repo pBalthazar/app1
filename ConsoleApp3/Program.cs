@@ -12,7 +12,7 @@ namespace ConsoleApp3
     class Program
     {
         static HttpClient client = new HttpClient();
-        const string API_KEY = "A2D3-HTDG-MLU2-3AM5";
+        static readonly string API_KEY = "A2D3-HTDG-MLU2-3AM5";
 
         static async Task<bool> TryConnection()
         {

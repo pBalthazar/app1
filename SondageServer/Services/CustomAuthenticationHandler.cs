@@ -13,6 +13,8 @@ namespace SondageServer.Services
     internal class CustomAuthenticationHandler :
         AuthenticationHandler<CustomAuthenticationOptions>
     {
+        readonly string API_KEY = "A2D3-HTDG-MLU2-3AM5";
+
         public CustomAuthenticationHandler(IOptionsMonitor<CustomAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) :
             base(options, logger, encoder, clock)
         {
@@ -22,7 +24,7 @@ namespace SondageServer.Services
         {
             try
             {
-                if (this.Request.Headers["Authorization"] == "A2D3-HTDG-MLU2-3AM5")
+                if (this.Request.Headers["Authorization"] == API_KEY)
                 {
                     return AuthenticateResult.Success(
                         new AuthenticationTicket(
