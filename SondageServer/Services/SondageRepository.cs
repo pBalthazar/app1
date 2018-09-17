@@ -12,7 +12,7 @@ namespace SondageServer.Services
 
         public SondageRepository()
         {
-            sondage = new SimpleSondageDAO();
+            sondage = ServicesContainer.GetSondageMemory();
         }
 
         public IList<Poll> GetSondages()

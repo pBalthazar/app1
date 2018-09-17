@@ -81,6 +81,7 @@
     <Compile Include="PollQuestion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleSondageDAO.cs" />
+    <Compile Include="SondageUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

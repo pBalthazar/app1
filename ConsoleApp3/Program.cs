@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using USherbrooke.ServiceModel.Sondage;
@@ -71,29 +72,26 @@ namespace ConsoleApp3
             RunAsync().GetAwaiter().GetResult();
         }
 
-        /*static async Task<bool> LogInWithUsername()
+        
+        static async Task<int?> LogInWithUsername()
         {
-            //On demande le nom d'utilisateur
-            //Console.WriteLine("Enter your userId:");
-            //string _userId = Console.ReadLine();
-            //int userId;
-            //
-            //while (!Int32.TryParse(_userId, out userId))
-            //{
-            //    Console.WriteLine("Enter a valid number...! Try again");
-            //    userId = -1;
-            //    _userId = Console.ReadLine();
-            //}
+            int? userId = null;
             
             Console.WriteLine("Enter your username:");
             string _username = Console.ReadLine();
             Console.WriteLine("Enter your password:");
             string _password = Console.ReadLine();
 
-            HttpResponseMessage response = await client.PostAsync("/Login", new StringContent(_username + ':' + _password, Encoding.UTF8, "application/json"));
+            var user = new SondageUser(_username, GetHashString(_password));
 
-            return _username == "123" && _password == "456";
-        }*/
+            HttpResponseMessage response = await client.PostAsJsonAsync("api/login", user);
+
+            if (response.IsSuccessStatusCode)
+            {
+                userId = await response.Content.ReadAsAsync<int>();
+            }
+            return userId;
+        }
 
         static async Task RunAsync()
         {
@@ -108,13 +106,19 @@ namespace ConsoleApp3
             {
                 try
                 {
+                    bool quitPoll = false;
                     /*while (!LogInWithUsername().Result)
                     {
                         Console.WriteLine("Invalid username or password, try again.");
                     };*/
+                    int? userId = await LogInWithUsername();
 
-                    bool quitPoll = false;
-
+                    if (!userId.HasValue || userId.Value < 1)
+                    {
+                        Console.WriteLine("Invalid login!");
+                        quitPoll = true;
+                    }
+                    
                     while (!quitPoll)
                     {
                         //Get the availables polls
@@ -188,6 +192,21 @@ namespace ConsoleApp3
                 Console.WriteLine("Server not responding...");
             }
             Console.ReadLine();
+        }
+
+        static private byte[] GetHash(string inputString)
+        {
+            var algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        static private string GetHashString(string inputString)
+        {
+            var sb = new StringBuilder();
+            foreach (var b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
         }
     }
 }
