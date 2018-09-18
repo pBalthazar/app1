@@ -26,5 +26,15 @@ namespace SondageServer.Services
 
             return userId;
         }
+
+        public bool checkUserExists(int userId) {
+            foreach (var user in availablesUsers)
+            {
+                if (user.UserId == userId) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

@@ -19,5 +19,9 @@ namespace SondageServer.Services
         {
             return loginRepository.GetUserId(user);
         }
+
+        public bool checkUserExists(int userId) {
+            return loginRepository.checkUserExists(userId);
+        }
     }
 }

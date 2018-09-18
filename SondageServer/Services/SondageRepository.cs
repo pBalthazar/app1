@@ -27,8 +27,15 @@ namespace SondageServer.Services
 
         public bool SaveQuestionAnswer(int userId, PollQuestion question)
         {
-            sondage.SaveAnswer(userId, question);
-            return true;
+            try
+            {
+                sondage.SaveAnswer(userId, question);
+                return true;
+            }
+            catch (Exception e) {
+                //handle e
+                return false;
+            }
         }
     }
 }

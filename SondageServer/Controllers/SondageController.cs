@@ -18,7 +18,7 @@ public class SondageController : Controller
     private const int MAX_QUESTION_NUMBER = 500;
 
     readonly ILogger<SondageController> _log;
-    //To log informations: _log.LogInformation("Hello, world!");
+
     public SondageController(ILogger<SondageController> log)
     {
         _log = log;
@@ -48,7 +48,7 @@ public class SondageController : Controller
     {
         bool result = false;
 
-        if (ValidateUserId(userId) && ValidateQuestionToSave(question))
+        if (ValidateUserId(userId) && ValidateQuestionToSave(question) && ServicesContainer.LoginService.checkUserExists(userId))
         {
             result = ServicesContainer.SondageService.SaveAnswer(userId, question);
         }

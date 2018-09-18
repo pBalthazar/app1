@@ -114,12 +114,25 @@ namespace USherbrooke.ServiceModel.Sondage
         /// <exception cref="PersistenceException">Cette exception sera lancée si le DAO est incapable de communiquer avec le médium de stockage pour sauvegarder la réponse</exception>
         public void SaveAnswer(int userId, PollQuestion question)
         {
+            // Vérification des médiums de stockage
+            if (availablePolls == null) {
+                throw new PersistenceException("Database availablePolls is null");
+            }
+
+            if (answeredPolls == null)
+            {
+                throw new PersistenceException("Database answeredPolls is null");
+            }
+
             // Vérification d'un poll ID valide
             IList<PollQuestion> questions;
             if (!availablePolls.TryGetValue(question.PollId, out questions)) {
 
                 throw new InvalidIdException(question.PollId.ToString(), "Invalid poll ID!");
             }
+
+            // Vérification d'un userId valide
+            //Le champ userId est validé dans le controller du serveur
 
             // S'il existe déjà des réponses pour ce sondage, on vérifie si l'utilisateur courant y a déjà répondu
             IDictionary<int, IList<PollQuestion>> pollAnswers;
