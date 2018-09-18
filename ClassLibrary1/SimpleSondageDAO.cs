@@ -67,6 +67,9 @@ namespace USherbrooke.ServiceModel.Sondage
         /// <exception cref="PersistenceException">Cette exception sera lancée si le DAO est incapable de communiquer avec le médium de stockage pour lire les sondages disponibles</exception>
         public IList<Poll> GetAvailablePolls()
         {
+            if (pollDescriptions == null) {
+                throw new PersistenceException("Database pollDescriptions is null");
+            }
             return pollDescriptions;
         }
 
@@ -80,6 +83,12 @@ namespace USherbrooke.ServiceModel.Sondage
         /// <exception cref="PersistenceException">Cette exception sera lancée si le DAO est incapable de communiquer avec le médium de stockage pour lire les questions</exception>
         public PollQuestion GetNextQuestion(int pollId, int currentQuestionId)
         {
+            // Vérification des médiums de stockage
+            if (availablePolls == null)
+            {
+                throw new PersistenceException("Database availablePolls is null");
+            }
+
             IList<PollQuestion> questions = new List<PollQuestion>();
             if (availablePolls.TryGetValue(pollId, out questions) && questions.Count > 0)
             {
@@ -101,6 +110,9 @@ namespace USherbrooke.ServiceModel.Sondage
                     }
                 }
 
+            }
+            else {
+                throw new InvalidIdException(pollId.ToString(), "Invalid poll ID!");
             }
             return null;
         }

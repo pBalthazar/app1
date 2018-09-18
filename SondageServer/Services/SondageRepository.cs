@@ -17,12 +17,26 @@ namespace SondageServer.Services
 
         public IList<Poll> GetSondages()
         {
-            return sondage.GetAvailablePolls();
+            try
+            {
+                return sondage.GetAvailablePolls();
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
         public PollQuestion GetNextQuestion(int pollId, int currentQuestionId)
         {
-            return sondage.GetNextQuestion(pollId, currentQuestionId);
+            try
+            {
+                return sondage.GetNextQuestion(pollId, currentQuestionId);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                return null;
+            }
         }
 
         public bool SaveQuestionAnswer(int userId, PollQuestion question)
@@ -33,7 +47,7 @@ namespace SondageServer.Services
                 return true;
             }
             catch (Exception e) {
-                //handle e
+                Console.WriteLine(e);
                 return false;
             }
         }
