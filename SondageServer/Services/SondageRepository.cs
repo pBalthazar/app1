@@ -21,10 +21,18 @@ namespace SondageServer.Services
             {
                 return sondage.GetAvailablePolls();
             }
-            catch (Exception e) {
-                Console.WriteLine(e);
+
+            catch  (InvalidIdException iie)
+            {
+                Console.WriteLine(iie);
+            }
+            catch (PersistenceException pe)
+            {
+                Console.WriteLine(pe);
                 return null;
             }
+
+            return null;
         }
 
         public PollQuestion GetNextQuestion(int pollId, int currentQuestionId)
@@ -33,10 +41,17 @@ namespace SondageServer.Services
             {
                 return sondage.GetNextQuestion(pollId, currentQuestionId);
             }
-            catch (Exception e) {
-                Console.WriteLine(e);
+            catch (InvalidIdException iie)
+            {
+                Console.WriteLine(iie);
+            }
+            catch (PersistenceException pe)
+            {
+                Console.WriteLine(pe);
                 return null;
             }
+
+            return null;
         }
 
         public bool SaveQuestionAnswer(int userId, PollQuestion question)
@@ -46,10 +61,17 @@ namespace SondageServer.Services
                 sondage.SaveAnswer(userId, question);
                 return true;
             }
-            catch (Exception e) {
-                Console.WriteLine(e);
-                return false;
+
+            catch (InvalidIdException iie)
+            {
+                Console.WriteLine(iie);
             }
+            catch (PersistenceException pe)
+            {
+                Console.WriteLine(pe);
+            }
+
+            return false;
         }
     }
 }
